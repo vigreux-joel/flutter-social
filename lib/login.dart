@@ -31,6 +31,7 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -42,14 +43,13 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  _FormState createState() {
-    return _FormState();
-  }
+  State createState() => _FormState();
 }
 
-class _FormState {
+class _FormState extends State {
   bool emailValid = false;
 
+  @override
   Widget build(BuildContext context) {
     return Form(
       child: Center(
@@ -70,11 +70,13 @@ class _FormState {
                           backgroundColor: Colors.red,
                         )
                     );
-                    // TODO changer le design du submit et elever le preventDefault
+                    // TODO changer le design du submit
                   }
                   else{
-                    emailValid = true;
                     ScaffoldMessenger.of(context).clearSnackBars();
+                    setState(() {
+                      emailValid = true;
+                    });
                   }
                 }
               },
@@ -104,29 +106,51 @@ class _FormState {
                 return null;
               },
             ),
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 16.0),
-              child: ElevatedButton(
-                onPressed: () {
-                  if (emailValid) {
-                    if (GlobalKey<FormState>().currentState!.validate()) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('Processing Data')),
-                      );
-                    }
-                  }
-                  else{
-                    ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('email invalide')),
-                    );
-                  }
-                },
-                child: const Text('Submit'),
-              ),
-            ),
+            _SubmitState(emailValid: emailValid).build(context),
           ],
         ),
       ),
     );
   }
+
+  State createState() => _SubmitState(emailValid: emailValid);
+
+}
+
+class _SubmitState extends State{
+  _SubmitState({required this.emailValid});
+
+final bool emailValid;
+  // bool get emailValid => this.emailValid;
+
+  @override
+  Widget build(BuildContext context) {
+    List color = [MaterialStateProperty.all<Color>(Colors.red), Theme.of(context).primaryColor];
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 16.0),
+      child: ElevatedButton(
+        onPressed: () {
+          if (emailValid) {
+            if (GlobalKey<FormState>().currentState!.validate()) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('Processing Data')),
+                //  TODO server treatment
+              );
+            }
+          }
+          else{
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('email invalide')),
+            );
+          }
+        },
+        child: const Text('Submit'),
+        style: ButtonStyle(
+            backgroundColor: color[emailValid ? 1 : 0],
+        )
+      ),
+    );
+  }
+
+
 }
