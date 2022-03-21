@@ -15,7 +15,7 @@ class Login extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.green,
       ),
-      home: const LoginPage(title: "login"),
+      home: const LoginPage(title: "null"),
     );
   }
 }
@@ -25,29 +25,44 @@ class LoginPage extends StatefulWidget {
 
   final String title;
 
-  @override
-  State<LoginPage> createState() => _LoginPageState();
-
-}
-
-class _LoginPageState extends State<LoginPage> {
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.title),
+        title: Text(title),
       ),
       body: Center(
-        child:_FormState().build(context)
+          child:_FormState(emailValid: false).widget
       ),
     );
   }
 
-  State createState() => _FormState();
-}
+  @override
+  State<LoginPage> createState() => _FormState(emailValid: false);
 
-class _FormState extends State {
+}
+//
+// class _LoginPageState extends State<LoginPage> {
+//
+//
+//   State createState() => _FormState();
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     // TODO: implement build
+//     throw UnimplementedError();
+//   }
+// }
+
+class _FormState extends State<LoginPage> {
+   _FormState({required this.emailValid});
+
   bool emailValid = false;
+
+  void changeBackgroundSubmit(a){
+    setState(() {
+      emailValid = a;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -70,13 +85,14 @@ class _FormState extends State {
                           backgroundColor: Colors.red,
                         )
                     );
+                    emailValid = false;
+                    // _SubmitState().emailValid = false;
                     // TODO changer le design du submit
                   }
                   else{
+                    emailValid = true;
                     ScaffoldMessenger.of(context).clearSnackBars();
-                    setState(() {
-                      emailValid = true;
-                    });
+                    // _SubmitState().emailValid = true;
                   }
                 }
               },
@@ -106,22 +122,43 @@ class _FormState extends State {
                 return null;
               },
             ),
-            _SubmitState(emailValid: emailValid).build(context),
+            _SubmitState().widget,
           ],
         ),
       ),
     );
   }
 
-  State createState() => _SubmitState(emailValid: emailValid);
+
+
+// Submit createState() => Submit(emailValid: (bool emailValid) { emailValid; },);
 
 }
 
-class _SubmitState extends State{
-  _SubmitState({required this.emailValid});
+class Submit extends StatefulWidget {
+   const Submit({required this.emailValid, Key? key}) : super(key: key);
 
-final bool emailValid;
-  // bool get emailValid => this.emailValid;
+  final bool emailValid;
+// bool get emailValid => this.emailValid;
+  @override
+  State<StatefulWidget> createState() => _SubmitState();
+}
+
+
+class _SubmitState extends State<Submit>{
+
+  bool emailValid = false;
+
+  void _validateEmail(bool a) {
+    setState(() {
+      if (a) {
+        emailValid = true;
+      }
+      else {
+        emailValid = false;
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
