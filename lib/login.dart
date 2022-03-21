@@ -15,7 +15,7 @@ class Login extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.green,
       ),
-      home: const LoginPage(title: "null"),
+      home: LoginPage(title: "login",),
     );
   }
 }
@@ -31,39 +31,21 @@ class LoginPage extends StatefulWidget {
         title: Text(title),
       ),
       body: Center(
-          child:_FormState(emailValid: false).widget
+          child:_FormState().widget
       ),
     );
   }
 
   @override
-  State<LoginPage> createState() => _FormState(emailValid: false);
+  State createState() => _FormState();
 
 }
-//
-// class _LoginPageState extends State<LoginPage> {
-//
-//
-//   State createState() => _FormState();
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     // TODO: implement build
-//     throw UnimplementedError();
-//   }
-// }
 
 class _FormState extends State<LoginPage> {
-   _FormState({required this.emailValid});
+   // _FormState({required this.emailValid});
 
   bool emailValid = false;
-
-  void changeBackgroundSubmit(a){
-    setState(() {
-      emailValid = a;
-    });
-  }
-
+  
   @override
   Widget build(BuildContext context) {
     return Form(
@@ -85,15 +67,23 @@ class _FormState extends State<LoginPage> {
                           backgroundColor: Colors.red,
                         )
                     );
-                    emailValid = false;
+                    // _validateEmail(false);
                     // _SubmitState().emailValid = false;
                     // TODO changer le design du submit
                   }
-                  else{
-                    emailValid = true;
-                    ScaffoldMessenger.of(context).clearSnackBars();
-                    // _SubmitState().emailValid = true;
-                  }
+                  // else{
+                    // _validateEmail(true);
+
+                    //  _SubmitState(emailValid: true);
+
+
+                    // ScaffoldMessenger.of(context).clearSnackBars();
+                    // _FormState(emailStatus: true);
+                    // setState(() {
+                    //   emailValid = true;
+                    // });
+                   // _SubmitState emailOK;
+                  // }
                 }
               },
               validator: (String? email) {
@@ -122,47 +112,29 @@ class _FormState extends State<LoginPage> {
                 return null;
               },
             ),
-            _SubmitState().widget,
+            _SubmitState(emailValid: emailValid).widget,
           ],
         ),
       ),
     );
   }
-
-
-
-// Submit createState() => Submit(emailValid: (bool emailValid) { emailValid; },);
-
 }
 
 class Submit extends StatefulWidget {
-   const Submit({required this.emailValid, Key? key}) : super(key: key);
-
+   const Submit({Key? key, required this.emailValid}) : super(key: key);
   final bool emailValid;
-// bool get emailValid => this.emailValid;
   @override
-  State<StatefulWidget> createState() => _SubmitState();
+  State<StatefulWidget> createState() => _SubmitState(emailValid: emailValid);
 }
 
-
 class _SubmitState extends State<Submit>{
+  _SubmitState({required this.emailValid});
 
-  bool emailValid = false;
-
-  void _validateEmail(bool a) {
-    setState(() {
-      if (a) {
-        emailValid = true;
-      }
-      else {
-        emailValid = false;
-      }
-    });
-  }
-
+   late final bool emailValid;
+ 
   @override
   Widget build(BuildContext context) {
-    List color = [MaterialStateProperty.all<Color>(Colors.red), Theme.of(context).primaryColor];
+    List color = [Colors.red, Colors.green];
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 16.0),
       child: ElevatedButton(
@@ -188,6 +160,4 @@ class _SubmitState extends State<Submit>{
       ),
     );
   }
-
-
 }
