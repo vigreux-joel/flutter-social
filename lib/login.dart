@@ -24,7 +24,6 @@ class Login extends StatelessWidget {
 class LoginPage extends StatefulWidget{
    LoginPage({Key? key, required this.title}) : super(key: key);
 
-   Theme.of(context, this.title).copyWith(primarySwatch: Colors.green,)
 
    final String title;
 
@@ -44,12 +43,14 @@ class LoginPage extends StatefulWidget{
     );
   }
 
-  List<MaterialStateProperty<MaterialColor>> backgroundColor =
-  [MaterialStateProperty.all(Colors.green),
-  MaterialStateProperty.all(Colors.red)];
+  List <MaterialStateProperty<MaterialColor>> backgroundsColor =
+  [
+    MaterialStateProperty.all(Colors.green),
+    MaterialStateProperty.all(Colors.red),
+  ];
 
   @override
-  State createState() => _FormState(validateEmail: false, colorBackInput: backgroundColor);
+  State createState() => _FormState(validateEmail: false, colorBackInput: backgroundsColor);
 }
 
 class _FormState extends State<LoginPage> implements SubmitState  {
@@ -102,7 +103,7 @@ class _FormState extends State<LoginPage> implements SubmitState  {
                     else {
                       validateEmail = false;
                     }
-                    setState(SubmitState(validateEmail: validateEmail).checkSyntaxEmail(validateEmail));
+                    setState1(SubmitState(validateEmail: validateEmail).checkSyntaxEmail(validateEmail));
                   },
                   validator: (String? email) {
                     if (email == null || email.isEmpty) {
@@ -150,10 +151,11 @@ class _FormState extends State<LoginPage> implements SubmitState  {
                         }
                       },
                       child: const Text('Submit'),
+                    // split le style du bouton et ladapter par rapport au info du person
                       style: ButtonStyle(
-                      backgroundColor: validateEmail
-                          ? colorBackInput[validateEmail ? 1 : 0]
-                          : colorBackInput[0],
+                        print(validateEmail),
+                        print(colorBackInput),
+                      backgroundColor: _background(validateEmail, colorBackInput)
                       ),
                   ),
                 )
@@ -203,39 +205,50 @@ class SubmitState extends State<LoginPage> {
   }
 
   @override
-  void setState(VoidCallback fn) {
+    void setState1(VoidCallback fn) {
     final bool validateEmail = fn() as dynamic;
     super.setState(fn);
   }
 
+  _background (validateEmail, colorBackInput) {
+    if (validateEmail) {
+      return colorBackInput[validateEmail ? 1 : 0];
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
-      return Padding(
-        padding: const EdgeInsets.symmetric(vertical: 16.0),
-        child: ElevatedButton(
-          onPressed: () {
-            if (validateEmail) {
-              if (GlobalKey<FormState>().currentState!.validate()) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Processing Data')),
-                  //  TODO server treatment
-                );
-              }
-            }
-            else {
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('email invalide')),
-              );
-            }
-          },
-          child: const Text('Submit'),
-          style: ButtonStyle(
-            backgroundColor: color[validateEmail ? 1 : 0],
-          )
-        ),
-      );
-    }
+//TODO fonction de build du bouton
+  }
+
+  // @override
+  // Widget build(BuildContext context) {
+  //   // TODO: implement build
+  //     return Padding(
+  //       padding: const EdgeInsets.symmetric(vertical: 16.0),
+  //       child: ElevatedButton(
+  //         onPressed: () {
+  //           if (validateEmail) {
+  //             if (GlobalKey<FormState>().currentState!.validate()) {
+  //               ScaffoldMessenger.of(context).showSnackBar(
+  //                 const SnackBar(content: Text('Processing Data')),
+  //                 //  TODO server treatment
+  //               );
+  //             }
+  //           }
+  //           else {
+  //             ScaffoldMessenger.of(context).showSnackBar(
+  //               const SnackBar(content: Text('email invalide')),
+  //             );
+  //           }
+  //         },
+  //         child: const Text('Submit'),
+  //         style: ButtonStyle(
+  //           backgroundColor: _background(validateEmail, color),
+  //         )
+  //       ),
+  //     );
+  //   }
   }
 
 
